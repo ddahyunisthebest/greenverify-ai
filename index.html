@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GreenVerify AI</title>
+  <title>GreenVerify AI - XAI 친환경 검증 및 대체 공정 처방 플랫폼</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -14,7 +14,7 @@
     <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2">
       <div>
         <h1 class="text-2xl font-black">GreenVerify <span class="text-emerald-400">AI</span></h1>
-        <p class="text-xs text-slate-400">선형 회귀(기준선) + 인공신경망(ANN) + XAI 투명성 근거 기반 친환경 검증 시스템</p>
+        <p class="text-xs text-slate-400">선형 회귀 + 인공신경망(ANN) + XAI 근거 분석 및 맞춤형 대체 소재·공정 처방 시스템</p>
       </div>
       <div class="text-xs bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
         연구원: <span class="text-emerald-400 font-bold">금정기 (32세, 신소재 공정개발)</span>
@@ -23,9 +23,10 @@
   </header>
 
   <main class="max-w-6xl mx-auto px-4 py-6 space-y-5">
+    <!-- 1. 검색 및 추가 입력 -->
     <section class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
       <div class="flex flex-col md:flex-row gap-3">
-        <input id="qInput" type="text" placeholder="기업명 검색 (예: 롯데케미칼, 삼성SDI, 한화솔루션, 에쓰-오일, Syncrude, LG화학, 포스코...)" class="flex-1 px-4 py-2.5 border border-slate-300 rounded-xl text-sm" />
+        <input id="qInput" type="text" placeholder="기업명 검색 (예: 포스코, 현대제철, 롯데케미칼, 에쓰-오일, Syncrude, LG화학, 삼성SDI...)" class="flex-1 px-4 py-2.5 border border-slate-300 rounded-xl text-sm" />
         <button id="qBtn" type="button" class="bg-slate-900 text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-800">검색</button>
         <button id="mOpen" type="button" class="bg-emerald-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-emerald-700">+ 새 회사 직접 측정</button>
         <label class="bg-blue-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm cursor-pointer text-center hover:bg-blue-700">
@@ -38,6 +39,7 @@
       </div>
     </section>
 
+    <!-- 2. 최종 판정 배너 -->
     <section id="vBox" class="p-6 rounded-2xl border-2 flex flex-col md:flex-row justify-between items-center gap-4">
       <div>
         <div class="flex gap-2 mb-1">
@@ -50,6 +52,7 @@
       <div id="fBadge" class="px-6 py-3 rounded-xl font-black text-lg text-white"></div>
     </section>
 
+    <!-- 3. 핵심 수치 카드 -->
     <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
       <div class="bg-white p-4 rounded-xl border"><p class="text-xs font-bold text-slate-500">실측 온실가스</p><p id="kGhg" class="text-xl font-black mt-1">-</p><p id="kDiff" class="text-xs font-bold mt-1">-</p></div>
       <div class="bg-white p-4 rounded-xl border"><p class="text-xs font-bold text-slate-500">1단계 선형회귀 기준</p><p id="kBase" class="text-xl font-black text-blue-600 mt-1">-</p><p id="kEng" class="text-xs text-slate-500 mt-1">-</p></div>
@@ -57,6 +60,7 @@
       <div class="bg-white p-4 rounded-xl border"><p class="text-xs font-bold text-slate-500">2단계 ANN 이상 패턴</p><p id="kAnn" class="text-xl font-black text-purple-600 mt-1">-</p><p class="text-xs text-slate-500 mt-1">Zenodo 센서 대조</p></div>
     </section>
 
+    <!-- 4. XAI 설명가능성 리포트 & 차트 -->
     <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div class="bg-white p-6 rounded-2xl border space-y-4">
         <span class="bg-indigo-100 text-indigo-700 text-xs font-black px-2.5 py-1 rounded">AI 윤리 해결: XAI 투명성 근거</span>
@@ -70,6 +74,41 @@
       </div>
     </section>
 
+    <!-- 5. 신규 추가: 최우선 감축 물질 진단 & 대체 소재·공정 처방 솔루션 -->
+    <section id="rxSection" class="bg-white p-6 rounded-2xl border-2 border-indigo-200 shadow-sm space-y-4">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 border-b border-slate-100 pb-3">
+        <div>
+          <span class="bg-amber-100 text-amber-800 text-xs font-black px-2.5 py-1 rounded">처방형 AI 솔루션 · 환경부 BAT & NIR 배출계수 기반</span>
+          <h3 class="text-lg font-black text-slate-900 mt-1">최우선 감축 대상 물질 및 친환경 대체품·공정 추천</h3>
+        </div>
+        <span id="rxTargetBadge" class="text-xs font-black px-3 py-1.5 rounded-lg bg-rose-100 text-rose-800"></span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <!-- 감축 목표 진단 -->
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+          <p class="text-xs font-black text-indigo-700">1. 핵심 감축 타겟 물질 & 목표치</p>
+          <h4 id="rxPollutant" class="text-base font-black text-slate-900">-</h4>
+          <p id="rxGoalText" class="text-xs text-slate-600 leading-relaxed">-</p>
+        </div>
+
+        <!-- 대체 소재/연료 추천 -->
+        <div class="bg-emerald-50/70 p-4 rounded-xl border border-emerald-200 space-y-2">
+          <p class="text-xs font-black text-emerald-800">2. 추천 대체 연료·소재·원료</p>
+          <h4 id="rxAltMaterial" class="text-base font-black text-slate-900">-</h4>
+          <p id="rxAltMatDesc" class="text-xs text-slate-700 leading-relaxed">-</p>
+        </div>
+
+        <!-- 대체 설비/촉매 추천 -->
+        <div class="bg-blue-50/70 p-4 rounded-xl border border-blue-200 space-y-2">
+          <p class="text-xs font-black text-blue-800">3. 추천 저감 촉매·방지설비 (BAT)</p>
+          <h4 id="rxAltTech" class="text-base font-black text-slate-900">-</h4>
+          <p id="rxAltTechDesc" class="text-xs text-slate-700 leading-relaxed">-</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. 공정 개선 시뮬레이터 -->
     <section class="bg-slate-900 text-white p-6 rounded-2xl space-y-4">
       <div class="flex flex-col md:flex-row justify-between items-center gap-2">
         <div><h3 class="text-lg font-black">연구원용 공정 저감 시뮬레이터</h3><p class="text-xs text-slate-400">전력 감축 및 저감 설비 효율 조절 시 친환경 기준 달성 여부 예측</p></div>
@@ -82,16 +121,17 @@
     </section>
   </main>
 
-  <div id="modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4">
+  <!-- 새 회사 직접 입력 모달 -->
+  <div id="modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
     <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-3">
       <h3 class="text-lg font-black">새 회사 위험도 직접 측정</h3>
       <input id="mN" type="text" placeholder="기업명 (예: 금호석유화학)" class="w-full p-2 border rounded text-sm" />
       <input id="mE" type="number" placeholder="연간 전력 투입량 MWh (예: 60000)" class="w-full p-2 border rounded text-sm" />
       <input id="mG" type="number" placeholder="실측 온실가스 tCO2eq (예: 140000)" class="w-full p-2 border rounded text-sm" />
       <div class="grid grid-cols-3 gap-2">
-        <input id="m1" type="number" value="50" class="p-2 border rounded text-sm" />
-        <input id="m2" type="number" value="20" class="p-2 border rounded text-sm" />
-        <input id="m3" type="number" value="5" class="p-2 border rounded text-sm" />
+        <div><label class="text-[10px] font-bold">NOx(톤)</label><input id="m1" type="number" value="85" class="w-full p-2 border rounded text-sm" /></div>
+        <div><label class="text-[10px] font-bold">SOx(톤)</label><input id="m2" type="number" value="30" class="w-full p-2 border rounded text-sm" /></div>
+        <div><label class="text-[10px] font-bold">PM2.5(톤)</label><input id="m3" type="number" value="8" class="w-full p-2 border rounded text-sm" /></div>
       </div>
       <div class="flex gap-2 pt-2">
         <button id="mClose" type="button" class="flex-1 py-2 border rounded-lg font-bold text-sm">취소</button>
@@ -104,40 +144,64 @@
     const db = [
       { id: 1, name: "LG화학 (여수공장)", sub: "석유화학 기초소재 공정", src: "한국환경산업기술원 5개년 DB", eng: 84000, ghg: 142500, base: 145000, air: "NOx 115t · SOx 34t · PM2.5 8.5t", ann: 0, risk: "안전", eco: true,
         txt: "전력 투입량 대비 선형회귀 예측 기준치(145,000 tCO2eq)보다 -1.7% 낮게 배출되고, ANN 이상 파형이 0건으로 친환경 적합 판정입니다.",
-        fac: [["기준선 준수 및 저감 효율", 62], ["NOx 안정 제어", 24], ["SOx 억제율", 14]], act: [140,138,142,141,139,143] },
+        fac: [["기준선 준수 및 저감 효율", 62], ["NOx 안정 제어", 24], ["SOx 억제율", 14]], act: [140,138,142,141,139,143],
+        rx: { badge: "친환경 우수 유지군", target: "전 항목 기준치 이내 (현행 유지)", goal: "현재 배출량이 기준치보다 2,500 tCO2eq 낮아 즉각적 감축 의무는 없으나, 탄소중립 고도화를 위해 열분해 연료의 수소 전환을 권장합니다.", mat: "바이오 납사(Bio-Naphtha) 원료 혼입", matDesc: "기존 화석 납사 원료의 15~20%를 폐식용유 기반 바이오 납사로 대체 시 공정 탄소배출 약 14% 추가 절감 가능.", tech: "전기가열 열분해로(e-Cracker) 전환", techDesc: "연소식 가열로를 재생전력 기반 전기 가열로로 단계 전환 시 NOx 및 CO2 직접 배출 원천 차단." }
+      },
       { id: 2, name: "포스코 (포항제철소)", sub: "고로 제선 및 제강 공정", src: "한국환경산업기술원 5개년 DB", eng: 310000, ghg: 715000, base: 640000, air: "NOx 890t · SOx 412t · PM2.5 65.2t", ann: 2, risk: "주의", eco: false,
         txt: "선형회귀 예측 기준치(640,000 tCO2eq) 대비 +11.7% 초과 배출되었으며, 황산화물(SOx) 배출 기여도가 45%로 높아 공정 개선이 필요합니다.",
-        fac: [["황산화물(SOx) 배출 기여도", 45], ["질소산화물(NOx) 배출 비중", 35], ["탄소 기준선 초과(+11.7%)", 20]], act: [630,650,695,720,710,680] },
+        fac: [["황산화물(SOx) 배출 기여도", 45], ["질소산화물(NOx) 배출 비중", 35], ["탄소 기준선 초과(+11.7%)", 20]], act: [630,650,695,720,710,680],
+        rx: { badge: "1순위 감축: 황산화물(SOx)", target: "SOx 412t → 255t (-38% 감축 필요)", goal: "전체 위험 기여도의 45%를 차지하는 황산화물(SOx) 157톤 감축 및 온실가스 75,000 tCO2eq 저감 시 친환경 기준선을 달성합니다.", mat: "저유황탄·LNG 혼소 및 HBI(환원철) 대체", matDesc: "고유황 유연탄(황 함량 1.2% 이상)을 황 함량 0.3% 미만 저유황탄 및 LNG 부생가스 혼소로 대체 시 SOx 42% 즉시 저감.", tech: "습식 배연탈황설비(Wet FGD) 고효율화", techDesc: "소결로 배기가스 라인에 미세 석회석 슬러리 흡수탑 및 활성탄 건식 탈황 촉매를 추가하여 SOx 92% 이상 포집." }
+      },
       { id: 3, name: "현대제철 (당진제철소)", sub: "일관제철 및 특수강 공정", src: "한국환경산업기술원 5개년 DB", eng: 245000, ghg: 568000, base: 495000, air: "NOx 640t · SOx 295t · PM2.5 49.8t", ann: 3, risk: "위험", eco: false,
         txt: "선형회귀 기준치 대비 +14.7% 초과 배출 및 ANN 비선형 이상 급증 3회 탐지. 질소산화물(NOx) 비중이 47%로 친환경 부적합 판정입니다.",
-        fac: [["질소산화물(NOx) 초과 기여도", 47], ["탄소 기준치 초과(+14.7%)", 34], ["황산화물(SOx) 영향", 19]], act: [490,520,565,595,580,550] },
+        fac: [["질소산화물(NOx) 초과 기여도", 47], ["탄소 기준치 초과(+14.7%)", 34], ["황산화물(SOx) 영향", 19]], act: [490,520,565,595,580,550],
+        rx: { badge: "1순위 감축: 질소산화물(NOx)", target: "NOx 640t → 390t (-39% 감축 필요)", goal: "소결로 및 가열로에서 급증하는 질소산화물(NOx) 250톤과 온실가스 73,000 tCO2eq를 감축해야 친환경 기준 이내로 진입합니다.", mat: "철스크랩 전기로 비중 확대 & 수소 환원제", matDesc: "고로 용선 비율을 줄이고 고순도 철스크랩(고철) 기반 전기로(EAF) 및 코크스 대체 바이오매스 성형탄 적용 시 CO2·NOx 동시 35% 저감.", tech: "저녹스 버너(Low-NOx) & SCR 촉매 설비", techDesc: "가열로에 다단 연소 저녹스 버너를 교체하고 바나듐-티타늄(V2O5-TiO2)계 선택적 촉매 환원(SCR) 설비로 NOx 85% 제거." }
+      },
       { id: 4, name: "SK에너지 (울산CLX)", sub: "원유 정제 및 정밀화학 공정", src: "한국환경산업기술원 5개년 DB", eng: 162000, ghg: 274000, base: 280000, air: "NOx 210t · SOx 88t · PM2.5 16.2t", ann: 0, risk: "안전", eco: true,
         txt: "선형회귀 예측 기준치 대비 -2.1% 감축 달성 및 대기오염물질 전 항목 기준치 이내 유지로 친환경 적합 판정입니다.",
-        fac: [["에너지 효율 및 탄소 감축", 59], ["SOx 저감 설비 효율", 26], ["NOx 안정적 제어", 15]], act: [275,272,276,274,271,275] },
+        fac: [["에너지 효율 및 탄소 감축", 59], ["SOx 저감 설비 효율", 26], ["NOx 안정적 제어", 15]], act: [275,272,276,274,271,275],
+        rx: { badge: "친환경 우수 유지군", target: "전 항목 기준치 이내 (현행 유지)", goal: "기준선 대비 6,000 tCO2eq 여유분을 확보하고 있습니다. 차세대 지속가능항공유(SAF) 공정 전환으로 추가 감축이 가능합니다.", mat: "코프로세싱(Co-processing) 바이오 원료", matDesc: "정유 공정 원유 피드에 폐식용유·동물성 유지 등 바이오 원료를 동시 투입하여 제품 생애주기 탄소집약도 20% 추가 감축.", tech: "황회수설비(SRU) 테일가스 처리 고도화", techDesc: "기존 아민 흡수 및 클라우스(Claus) 황회수 공정 후단에 SCOT 테일가스 처리기를 연계해 황 회수율 99.9% 유지." }
+      },
       { id: 5, name: "롯데케미칼 (대산공장)", sub: "납사분해(NCC) 및 폴리머 공정", src: "한국환경산업기술원 5개년 DB", eng: 112000, ghg: 238000, base: 207000, air: "NOx 185t · SOx 72t · PM2.5 14.0t", ann: 3, risk: "위험", eco: false,
         txt: "투입 에너지 대비 선형회귀 예측 기준치(207,000 tCO2eq)를 +15.0% 초과했으며, 열분해로 구간의 NOx 배출 비중(44%)이 높아 친환경 부적합 판정입니다.",
-        fac: [["탄소 기준선 초과(+15.0%)", 46], ["질소산화물(NOx) 배출 비중", 44], ["황산화물(SOx) 영향", 10]], act: [205,215,235,248,240,232] },
+        fac: [["탄소 기준선 초과(+15.0%)", 46], ["질소산화물(NOx) 배출 비중", 44], ["황산화물(SOx) 영향", 10]], act: [205,215,235,248,240,232],
+        rx: { badge: "1순위 감축: 질소산화물(NOx) & CO2", target: "NOx 185t → 115t (-38% 감축 필요)", goal: "납사 열분해로(NCC) 고온 연소 구간의 질소산화물(NOx) 70톤과 온실가스 31,000 tCO2eq 감축이 시급합니다.", mat: "메탄·수소 혼소 연료 & 화학적 재활용 열분해유", matDesc: "열분해로 연료가스에 부생 수소를 30% 혼소하고 폐플라스틱 열분해유를 원료로 대체 투입 시 화석연료 기반 탄소·NOx 28% 저감.", tech: "초저녹스(Ultra Low-NOx) 복사버너 & SCR", techDesc: "NCC 가열로 화염 온도를 낮추는 배기가스 재순환(FGR) 초저녹스 버너 및 암모니아 무촉매 환원(SNCR/SCR) 적용." }
+      },
       { id: 6, name: "삼성SDI (울산사업장)", sub: "이차전지 양극활물질 및 셀 공정", src: "한국환경산업기술원 5개년 DB", eng: 68000, ghg: 118000, base: 125800, air: "NOx 42t · SOx 11t · PM2.5 3.1t", ann: 0, risk: "안전", eco: true,
         txt: "공정 전력 대비 선형회귀 예측 기준치(125,800 tCO2eq)보다 -6.2% 감축되었으며, 대기오염물질이 극소량으로 제어되어 친환경 적합 판정입니다.",
-        fac: [["전력 효율 및 탄소 감축(-6.2%)", 65], ["청정 배기 제어 효율", 25], ["센서 안정성(이상 0건)", 10]], act: [119,117,118,116,118,117] },
+        fac: [["전력 효율 및 탄소 감축(-6.2%)", 65], ["청정 배기 제어 효율", 25], ["센서 안정성(이상 0건)", 10]], act: [119,117,118,116,118,117],
+        rx: { badge: "친환경 최우수 사업장", target: "전 항목 기준치 크게 하회", goal: "직접 대기오염물질 배출이 매우 낮으며, 간접배출(Scope 2) 전력 사용량 최적화가 핵심 고도화 과제입니다.", mat: "재생에너지 PPA 전력 & 무용매 건식 전극 공정", matDesc: "전극 코팅 공정의 NMP 유기용매 대신 건식(Dry) 전극 공정을 확대 적용하면 건조로 전력 소비 및 VOCs 30% 추가 감축.", tech: "NMP 용매 회수 및 축열식 연소산화설비(RTO)", techDesc: "배기가스 내 유기용매를 98% 이상 응축 회수하여 재사용하고 고효율 RTO로 열에너지 자가 순환." }
+      },
       { id: 7, name: "한화솔루션 (여수공장)", sub: "가성소다 및 염화비닐(PVC) 공정", src: "한국환경산업기술원 5개년 DB", eng: 95000, ghg: 171000, base: 175750, air: "NOx 98t · SOx 28t · PM2.5 7.2t", ann: 0, risk: "안전", eco: true,
         txt: "선형회귀 예측 기준치(175,750 tCO2eq) 대비 -2.7% 낮게 관리되고 있으며, ANN 이상 패턴이 발견되지 않아 친환경 기준을 충족했습니다.",
-        fac: [["기준선 이하 배출 유지(-2.7%)", 58], ["NOx/SOx 스크러버 효율", 29], ["공정 에너지 안정도", 13]], act: [172,170,171,169,172,170] },
+        fac: [["기준선 이하 배출 유지(-2.7%)", 58], ["NOx/SOx 스크러버 효율", 29], ["공정 에너지 안정도", 13]], act: [172,170,171,169,172,170],
+        rx: { badge: "친환경 우수 유지군", target: "전 항목 기준치 이내 (현행 유지)", goal: "전해조 전력 효율 개선으로 기준선 이하를 유지하고 있으며, 부생 수소를 연료전지에 활용하면 추가 감축이 가능합니다.", mat: "바이오 기반 에틸렌 및 그린수소 연료전환", matDesc: "PVC 원료 에틸렌 일부를 바이오 에틸렌으로 대체하고 전해 공정 부생 수소를 보일러 연료로 순환 활용.", tech: "산소탈분극음극(ODC) 저전력 전해조", techDesc: "기존 이온교환막 전해조에 산소탈분극음극 기술을 도입해 가성소다 생산 전력 소비량 25% 추가 절감." }
+      },
       { id: 8, name: "에쓰-오일 (온산공장)", sub: "중질유 분해 및 윤활기유 공정", src: "한국환경산업기술원 5개년 DB", eng: 178000, ghg: 362000, base: 329300, air: "NOx 310t · SOx 145t · PM2.5 24.5t", ann: 2, risk: "주의", eco: false,
         txt: "고도화 설비 가동에 따른 온실가스가 선형회귀 예측 기준치(329,300 tCO2eq) 대비 +9.9% 초과하여 주의 단계 및 친환경 부적합으로 분류되었습니다.",
-        fac: [["황산화물(SOx) 배출 기여도", 42], ["탄소 기준선 초과(+9.9%)", 38], ["질소산화물(NOx) 영향", 20]], act: [330,342,360,375,365,355] },
+        fac: [["황산화물(SOx) 배출 기여도", 42], ["탄소 기준선 초과(+9.9%)", 38], ["질소산화물(NOx) 영향", 20]], act: [330,342,360,375,365,355],
+        rx: { badge: "1순위 감축: 황산화물(SOx)", target: "SOx 145t → 95t (-35% 감축 필요)", goal: "중질유 분해(FCC/RUC) 공정에서 발생하는 황산화물(SOx) 50톤과 온실가스 32,700 tCO2eq 감축 시 친환경 기준을 통과합니다.", mat: "고유황 벙커C유 연료 → 천연가스(LNG) 전량 전환", matDesc: "공정 가열로 자체 연료로 쓰던 잔사유(벙커C유)를 LNG 및 부생 수소 연료로 대체 시 SOx 80% 이상 즉시 감축.", tech: "FCC 재생기 배연탈황(WGS) 및 SOx 저감 촉매", techDesc: "유동층 접촉분해(FCC) 촉매에 세륨·마그네슘계 SOx 포집 첨가제를 혼합 투입해 재생탑 황산화물 배출 65% 억제." }
+      },
       { id: 9, name: "Suncor Energy (캐나다)", sub: "오일샌드 개질 시설", src: "캐나다 GHGRP 공식 DB", eng: 195000, ghg: 482000, base: 365000, air: "NOx 520t · SOx 310t · PM2.5 48.0t", ann: 7, risk: "심각", eco: false,
         txt: "공식 기준치(365,000 tCO2eq) 대비 +32.1% 초과 배출 및 ANN 가스 연소 이상 급등 7회 적발로 친환경 부적합 판정입니다.",
-        fac: [["탄소 기준선 초과(+32.1%)", 48], ["NOx 및 SOx 급증 비중", 37], ["ANN 이상 파형 빈도", 15]], act: [360,410,495,540,510,475] },
+        fac: [["탄소 기준선 초과(+32.1%)", 48], ["NOx 및 SOx 급증 비중", 37], ["ANN 이상 파형 빈도", 15]], act: [360,410,495,540,510,475],
+        rx: { badge: "1순위 감축: 온실가스 & NOx/SOx", target: "CO2eq -117,000t / NOx -210t 감축 필요", goal: "비정상 가스 연소(Flaring) 7회 발생과 오일샌드 수증기 주입 보일러의 과다 연소가 핵심 원인으로 24.3% 이상 감축이 필수입니다.", mat: "용매 보조 증기중력배수법(ES-SAGD) 전환", matDesc: "고온 수증기 대신 경질 탄화수소 용매(프로판·부탄)를 혼입 주입하여 보일러 연료 소모 및 CO2/NOx 배출 30% 감축.", tech: "아민 기반 탄소포집저장(CCUS) & 플레어 회수", techDesc: "증기발생기 배기가스에 MEA 아민 흡수탑(CCUS)을 연결하고 플레어 가스 회수 압축기(FGRU)로 이상 배출 차단." }
+      },
       { id: 10, name: "ArcelorMittal (캐나다)", sub: "전기로 저탄소 제강 시설", src: "캐나다 GHGRP 공식 DB", eng: 150000, ghg: 289000, base: 292000, air: "NOx 240t · SOx 95t · PM2.5 19.4t", ann: 0, risk: "안전", eco: true,
         txt: "전기로 공정 운영으로 선형회귀 기준치 대비 -1.0% 낮게 배출되며 모든 대기오염물질이 기준치 이하로 검증되었습니다.",
-        fac: [["전기로 에너지 효율", 58], ["대기오염물질 안정화", 28], ["데이터 일치율", 14]], act: [290,288,291,287,289,290] },
+        fac: [["전기로 에너지 효율", 58], ["대기오염물질 안정화", 28], ["데이터 일치율", 14]], act: [290,288,291,287,289,290],
+        rx: { badge: "친환경 우수 유지군", target: "전 항목 기준치 이내 (현행 유지)", goal: "전기로(EAF) 기반 공정으로 기준선을 충족하고 있습니다. 직접환원철(DRI) 투입 비중을 높이면 초저탄소강 생산이 가능합니다.", mat: "그린수소 기반 직접환원철(H2-DRI) 원료", matDesc: "천연가스 환원철 대신 수소 환원철(DRI)과 고순도 스크랩을 배합하여 제강 탄소원단위 40% 추가 저감.", tech: "전기로 배기가스 폐열 회수 스크랩 예열 시스템", techDesc: "전기로 고온 배기가스로 투입 철스크랩을 사전 예열하여 전력 소모량 15% 절감 및 백필터 여과집진 효율 극대화." }
+      },
       { id: 11, name: "Syncrude Canada (캐나다)", sub: "오일샌드 채굴 및 합성원유 시설", src: "캐나다 GHGRP 공식 DB", eng: 220000, ghg: 515000, base: 407000, air: "NOx 610t · SOx 390t · PM2.5 52.0t", ann: 6, risk: "심각", eco: false,
         txt: "에너지 투입 대비 선형회귀 기준치(407,000 tCO2eq)를 +26.5% 초과했으며, 황산화물(390t)과 질소산화물(610t) 동반 급증으로 심각 등급 판정입니다.",
-        fac: [["탄소 기준선 초과(+26.5%)", 45], ["질소·황산화물 동반 배출", 40], ["ANN 비선형 급등(6회)", 15]], act: [410,445,510,550,530,505] },
+        fac: [["탄소 기준선 초과(+26.5%)", 45], ["질소·황산화물 동반 배출", 40], ["ANN 비선형 급등(6회)", 15]], act: [410,445,510,550,530,505],
+        rx: { badge: "1순위 감축: NOx(610t) & SOx(390t)", target: "NOx -245t / SOx -160t (-40% 감축)", goal: "코커(Coker) 개질 공정의 황·질소산화물 동반 급증이 심각 수준으로, 기준선(407,000 tCO2eq) 달성을 위해 108,000톤 감축이 필요합니다.", mat: "저온 파라핀계 용매 추출(PFT) 공정 대체", matDesc: "고온 열수 추출 대신 저온 파라핀계 용매 분리 방식을 적용해 가열 에너지와 황·질소 산화물 배출 35% 절감.", tech: "암모니아 스크러버 탈황·탈질 동시 처리(DeSOx/DeNOx)", techDesc: "코커 배기가스 라인에 암모니아 습식 스크러버를 도입해 SOx 95% 포집 및 비료 원료(황산암모늄)로 자원화." }
+      },
       { id: 12, name: "Imperial Oil Strathcona (캐나다)", sub: "정유 및 석유화학 복합 시설", src: "캐나다 GHGRP 공식 DB", eng: 132000, ghg: 239000, base: 244200, air: "NOx 175t · SOx 64t · PM2.5 12.8t", ann: 0, risk: "안전", eco: true,
         txt: "열병합 회수 공정 적용으로 선형회귀 기준치(244,200 tCO2eq) 대비 -2.1% 감축을 유지하고 있어 친환경 적합 판정을 받았습니다.",
-        fac: [["열병합 에너지 회수율", 60], ["대기오염물질 안정 제어", 26], ["ANN 센서 정상 파형", 14]], act: [240,238,241,237,239,238] }
+        fac: [["열병합 에너지 회수율", 60], ["대기오염물질 안정 제어", 26], ["ANN 센서 정상 파형", 14]], act: [240,238,241,237,239,238],
+        rx: { badge: "친환경 우수 유지군", target: "전 항목 기준치 이내 (현행 유지)", goal: "열병합 발전을 통해 기준선 대비 5,200 tCO2eq 감축을 달성했습니다. 수소화처리(Hydrotreating) 공정 고도화로 추가 개선이 가능합니다.", mat: "재생 디젤(HVO) 수소화 처리 원료", matDesc: "유채씨유·폐유지 등 식물성 원료를 수소화 처리(HVO)하여 기존 디젤 대비 탄소 배출 75% 저감 연료 생산.", tech: "자열개질(ATR) 블루수소 생산 및 탄소 포집", techDesc: "정유 공정용 수소 제조 설비를 자열개질(ATR) 방식으로 전환해 CO2 포집률 95% 달성." }
+      }
     ];
 
     let cur = db[0], chart = null;
@@ -185,6 +249,18 @@
         </div>
       `).join("");
 
+      // 처방형 AI 솔루션 렌더링
+      const rx = item.rx;
+      const rxBadge = document.getElementById("rxTargetBadge");
+      rxBadge.textContent = rx.badge;
+      rxBadge.className = "text-xs font-black px-3 py-1.5 rounded-lg " + (item.eco ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800");
+      document.getElementById("rxPollutant").textContent = rx.target;
+      document.getElementById("rxGoalText").textContent = rx.goal;
+      document.getElementById("rxAltMaterial").textContent = rx.mat;
+      document.getElementById("rxAltMatDesc").textContent = rx.matDesc;
+      document.getElementById("rxAltTech").textContent = rx.tech;
+      document.getElementById("rxAltTechDesc").textContent = rx.techDesc;
+
       const ctx = document.getElementById("chart").getContext("2d");
       if (chart) chart.destroy();
       chart = new Chart(ctx, {
@@ -220,38 +296,98 @@
       else alert("목록에 없는 기업입니다. [+ 새 회사 직접 측정] 또는 [+ CSV 추가] 버튼을 눌러 추가해 보세요!");
     }
 
+    // 입력된 수치를 바탕으로 최우선 감축 물질과 대체품을 자동 계산하는 처방 엔진
+    function generateCustomRx(eng, ghg, base, nox, sox, pm) {
+      const eco = ghg <= base;
+      const excessGhg = Math.max(0, ghg - base);
+      if (eco) {
+        return {
+          badge: "친환경 우수 유지군",
+          target: "전 항목 허용 기준치 이내",
+          goal: `선형회귀 예측 기준치(${base.toLocaleString()} tCO2eq) 이하로 안정 관리 중입니다. 신소재·재생원료 도입으로 탄소중립 고도화를 권장합니다.`,
+          mat: "바이오 기반 원료 및 그린수소 혼소 연료",
+          matDesc: "화석연료 기반 공정 원료의 20%를 바이오 원료 또는 부생 수소 연료로 대체 시 추가 탄소 감축 달성.",
+          tech: "폐열 회수 히트펌프 및 고효율 촉매 설비",
+          techDesc: "공정 배기 폐열을 회수해 예열 공정에 재투입하여 에너지 원단위 15% 추가 개선."
+        };
+      }
+      // NOx와 SOx 중 비중이 높은 물질 자동 판별
+      if (nox >= sox * 1.5) {
+        const cutNox = Math.round(nox * 0.38);
+        return {
+          badge: "1순위 감축: 질소산화물(NOx)",
+          target: `NOx ${nox}t → ${nox - cutNox}t (-${cutNox}t 감축 필요)`,
+          goal: `온실가스 ${excessGhg.toLocaleString()} tCO2eq 초과와 함께 고온 연소 구간의 질소산화물(NOx) 비중이 가장 높아 최우선 저감이 필요합니다.`,
+          mat: "저질소 청정연료(LNG) & 수소 혼소 전환",
+          matDesc: "중유·석탄계 고온 연료를 LNG 및 수소 20~30% 혼소 연료로 대체하여 화염 온도를 낮추고 NOx 35% 저감.",
+          tech: "저녹스 버너(Low-NOx) & SCR 촉매 환원 설비",
+          techDesc: "배기가스 재순환(FGR) 저녹스 버너 교체 및 바나듐-티타늄계 SCR 촉매탑 설치로 NOx 85% 이상 제거."
+        };
+      } else {
+        const cutSox = Math.round(sox * 0.40);
+        return {
+          badge: "1순위 감축: 황산화물(SOx)",
+          target: `SOx ${sox}t → ${sox - cutSox}t (-${cutSox}t 감축 필요)`,
+          goal: `온실가스 ${excessGhg.toLocaleString()} tCO2eq 초과와 함께 황산화물(SOx) 배출 부하가 높아 연료 탈황 및 배연탈황 설비 보강이 필수적입니다.`,
+          mat: "초저유황 연료(황 함량 0.1% 이하) 대체",
+          matDesc: "고유황 연료 및 원료를 초저유황 정제 연료 또는 천연가스(LNG)로 대체하여 SOx 발생원 원천 차단.",
+          tech: "습식 배연탈황설비(Wet FGD) & 활성탄 흡착탑",
+          techDesc: "석회석 슬러리 흡수탑(FGD) 및 산화마그네슘계 탈황 설비를 후단에 적용해 SOx 90% 이상 포집."
+        };
+      }
+    }
+
     document.getElementById("qBtn").onclick = doSearch;
     document.getElementById("qInput").onkeyup = (e) => { if (e.key === "Enter") doSearch(); };
     document.getElementById("eS").oninput = sim;
     document.getElementById("fS").oninput = sim;
     document.getElementById("mOpen").onclick = () => document.getElementById("modal").classList.remove("hidden");
     document.getElementById("mClose").onclick = () => document.getElementById("modal").classList.add("hidden");
+
     document.getElementById("mAdd").onclick = () => {
       const name = document.getElementById("mN").value.trim();
       const eng = Number(document.getElementById("mE").value);
       const ghg = Number(document.getElementById("mG").value);
-      if (!name || !eng || !ghg) return alert("모든 필수 항목을 입력하세요.");
+      const nox = Number(document.getElementById("m1").value) || 50;
+      const sox = Number(document.getElementById("m2").value) || 20;
+      const pm = Number(document.getElementById("m3").value) || 5;
+      if (!name || !eng || !ghg) return alert("기업명, 전력 투입량, 온실가스 배출량을 모두 입력하세요.");
       const base = Math.round(eng * 1.85), eco = ghg <= base;
-      const item = { id: Date.now(), name, sub: "사용자 직접 입력 공정", src: "직접 입력 데이터", eng, ghg, base,
-        air: `NOx ${document.getElementById("m1").value}t · SOx ${document.getElementById("m2").value}t · PM2.5 ${document.getElementById("m3").value}t`,
+      const item = {
+        id: Date.now(), name, sub: "사용자 직접 입력 공정", src: "직접 입력 데이터", eng, ghg, base,
+        air: `NOx ${nox}t · SOx ${sox}t · PM2.5 ${pm}t`,
         ann: eco ? 0 : 3, risk: eco ? "안전" : "위험", eco,
         txt: `투입 에너지(${eng.toLocaleString()} MWh) 대비 선형회귀 기준치(${base.toLocaleString()})와 대조해 ${eco ? '친환경 적합' : '친환경 부적합'}으로 판정되었습니다.`,
-        fac: [["기준선 대비 편차", 55], ["대기오염물질 영향", 45]], act: Array(6).fill(Math.round(ghg / 1000)) };
+        fac: [["기준선 대비 편차", 50], ["NOx 배출 영향", 30], ["SOx 및 미세먼지", 20]],
+        act: Array(6).fill(Math.round(ghg / 1000)),
+        rx: generateCustomRx(eng, ghg, base, nox, sox, pm)
+      };
       db.unshift(item);
       document.getElementById("modal").classList.add("hidden");
       show(item);
     };
+
     document.getElementById("fInput").onchange = (e) => {
       const file = e.target.files[0];
       if (!file) return;
       Papa.parse(file, { header: true, skipEmptyLines: true, complete: (res) => {
         const r = res.data[0]; if (!r) return;
         const k = Object.keys(r);
-        const name = String(r[k[0]] || file.name), eng = parseFloat(String(r[k[1]] || "50000").replace(/,/g, "")) || 50000, ghg = parseFloat(String(r[k[2]] || "90000").replace(/,/g, "")) || 90000;
+        const name = String(r[k[0]] || file.name);
+        const eng = parseFloat(String(r[k[1]] || "50000").replace(/,/g, "")) || 50000;
+        const ghg = parseFloat(String(r[k[2]] || "90000").replace(/,/g, "")) || 90000;
+        const nox = parseFloat(String(r[k[3]] || "90").replace(/,/g, "")) || 90;
+        const sox = parseFloat(String(r[k[4]] || "35").replace(/,/g, "")) || 35;
         const base = Math.round(eng * 1.85), eco = ghg <= base;
-        const item = { id: Date.now(), name, sub: "CSV 추출 공정", src: file.name, eng, ghg, base, air: "NOx 45t · SOx 18t · PM2.5 5t",
-          ann: eco ? 0 : 2, risk: eco ? "안전" : "위험", eco, txt: `업로드 파일(${file.name}) 실측 데이터 분석 결과입니다.`,
-          fac: [["기준선 대비 편차", 55], ["대기오염물질 영향", 45]], act: Array(6).fill(Math.round(ghg / 1000)) };
+        const item = {
+          id: Date.now(), name, sub: "CSV 추출 공정", src: file.name, eng, ghg, base,
+          air: `NOx ${nox}t · SOx ${sox}t · PM2.5 8t`,
+          ann: eco ? 0 : 2, risk: eco ? "안전" : "위험", eco,
+          txt: `업로드 파일(${file.name}) 실측 데이터 분석 결과입니다.`,
+          fac: [["기준선 대비 편차", 55], ["대기오염물질 영향", 45]],
+          act: Array(6).fill(Math.round(ghg / 1000)),
+          rx: generateCustomRx(eng, ghg, base, nox, sox, 8)
+        };
         db.unshift(item); show(item);
       }});
     };
