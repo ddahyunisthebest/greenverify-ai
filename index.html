@@ -3,14 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GreenVerify AI - 공공데이터 기반 친환경 검증 플랫폼</title>
+  <title>GreenVerify AI</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
-  <style>body { font-family: 'Noto Sans KR', sans-serif; background: #f8fafc; }</style>
 </head>
-<body class="text-slate-800">
+<body class="bg-slate-50 text-slate-800 font-sans">
 
   <header class="bg-slate-900 text-white py-5 px-4 shadow">
     <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2">
@@ -25,291 +23,216 @@
   </header>
 
   <main class="max-w-6xl mx-auto px-4 py-6 space-y-5">
-
-    <!-- 1. 검색 및 추가 입력 -->
     <section class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
       <div class="flex flex-col md:flex-row gap-3">
-        <input id="searchInput" type="text" placeholder="기업명 검색 (LG화학, 포스코, 현대제철, SK에너지, Suncor, ArcelorMittal)"
-          class="flex-1 px-4 py-2.5 border border-slate-300 rounded-xl text-sm" />
-        <button id="searchBtn" type="button" class="bg-slate-900 text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-800">검색</button>
-        <button id="openModalBtn" type="button" class="bg-emerald-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-emerald-700">+ 새 회사 직접 측정</button>
-        <label class="bg-blue-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-blue-700 cursor-pointer text-center">
-          + CSV 업로드<input id="csvInput" type="file" accept=".csv" class="hidden" />
+        <input id="qInput" type="text" placeholder="기업명 입력 (LG화학, 포스코, 현대제철, SK에너지, Suncor, ArcelorMittal)" class="flex-1 px-4 py-2.5 border border-slate-300 rounded-xl text-sm" />
+        <button id="qBtn" type="button" class="bg-slate-900 text-white px-5 py-2.5 rounded-xl font-bold text-sm">검색</button>
+        <button id="mOpen" type="button" class="bg-emerald-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm">+ 새 회사 직접 측정</button>
+        <label class="bg-blue-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm cursor-pointer text-center">
+          + CSV 추가<input id="fInput" type="file" accept=".csv" class="hidden" />
         </label>
       </div>
       <div>
-        <p class="text-xs font-bold text-slate-500 mb-2">공식 공공데이터 수록 기업 빠른 선택 (클릭 시 즉시 분석):</p>
-        <div id="btnList" class="flex flex-wrap gap-2"></div>
+        <p class="text-xs font-bold text-slate-500 mb-2">공식 공공데이터 수록 기업 빠른 선택:</p>
+        <div id="btnBox" class="flex flex-wrap gap-2"></div>
       </div>
     </section>
 
-    <!-- 2. 최종 판정 배너 -->
-    <section id="verdictBox" class="p-6 rounded-2xl border-2 flex flex-col md:flex-row justify-between items-center gap-4">
+    <section id="vBox" class="p-6 rounded-2xl border-2 flex flex-col md:flex-row justify-between items-center gap-4">
       <div>
         <div class="flex gap-2 mb-1">
-          <span id="badgeSource" class="text-xs font-bold px-2.5 py-0.5 rounded bg-slate-200"></span>
-          <span id="badgeRisk" class="text-xs font-black px-2.5 py-0.5 rounded"></span>
+          <span id="bSrc" class="text-xs font-bold px-2.5 py-0.5 rounded bg-slate-200"></span>
+          <span id="bRisk" class="text-xs font-black px-2.5 py-0.5 rounded"></span>
         </div>
-        <h2 id="titleName" class="text-2xl font-black"></h2>
-        <p id="subProcess" class="text-sm text-slate-600"></p>
+        <h2 id="tName" class="text-2xl font-black"></h2>
+        <p id="tSub" class="text-sm text-slate-600"></p>
       </div>
-      <div id="finalBadge" class="px-6 py-3 rounded-xl font-black text-lg text-white"></div>
+      <div id="fBadge" class="px-6 py-3 rounded-xl font-black text-lg text-white"></div>
     </section>
 
-    <!-- 3. 핵심 수치 카드 -->
     <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <div class="bg-white p-4 rounded-xl border">
-        <p class="text-xs font-bold text-slate-500">실측 온실가스 배출량</p>
-        <p id="valGhg" class="text-xl font-black mt-1">-</p>
-        <p id="valDiff" class="text-xs font-bold mt-1">-</p>
-      </div>
-      <div class="bg-white p-4 rounded-xl border">
-        <p class="text-xs font-bold text-slate-500">1단계 선형회귀 예측 기준</p>
-        <p id="valBase" class="text-xl font-black text-blue-600 mt-1">-</p>
-        <p id="valEnergy" class="text-xs text-slate-500 mt-1">-</p>
-      </div>
-      <div class="bg-white p-4 rounded-xl border">
-        <p class="text-xs font-bold text-slate-500">대기오염물질 배출량</p>
-        <p id="valAir" class="text-sm font-bold mt-2">-</p>
-      </div>
-      <div class="bg-white p-4 rounded-xl border">
-        <p class="text-xs font-bold text-slate-500">2단계 ANN 이상 패턴</p>
-        <p id="valAnn" class="text-xl font-black text-purple-600 mt-1">-</p>
-        <p class="text-xs text-slate-500 mt-1">Zenodo 센서 패턴 대조</p>
-      </div>
+      <div class="bg-white p-4 rounded-xl border"><p class="text-xs font-bold text-slate-500">실측 온실가스</p><p id="kGhg" class="text-xl font-black mt-1">-</p><p id="kDiff" class="text-xs font-bold mt-1">-</p></div>
+      <div class="bg-white p-4 rounded-xl border"><p class="text-xs font-bold text-slate-500">1단계 선형회귀 기준</p><p id="kBase" class="text-xl font-black text-blue-600 mt-1">-</p><p id="kEng" class="text-xs text-slate-500 mt-1">-</p></div>
+      <div class="bg-white p-4 rounded-xl border"><p class="text-xs font-bold text-slate-500">대기오염물질 배출량</p><p id="kAir" class="text-sm font-bold mt-2">-</p></div>
+      <div class="bg-white p-4 rounded-xl border"><p class="text-xs font-bold text-slate-500">2단계 ANN 이상 패턴</p><p id="kAnn" class="text-xl font-black text-purple-600 mt-1">-</p><p class="text-xs text-slate-500 mt-1">Zenodo 센서 대조</p></div>
     </section>
 
-    <!-- 4. XAI 설명가능성 리포트 & 차트 -->
     <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div class="bg-white p-6 rounded-2xl border space-y-4">
         <span class="bg-indigo-100 text-indigo-700 text-xs font-black px-2.5 py-1 rounded">AI 윤리 해결: XAI 투명성 근거</span>
-        <h3 class="text-lg font-black">왜 이런 판정이 나왔나요? (블랙박스 해결)</h3>
-        <div id="xaiText" class="p-4 bg-slate-50 rounded-xl border text-sm leading-relaxed"></div>
-        <div id="xaiBars" class="space-y-3 pt-2"></div>
+        <h3 class="text-lg font-black">친환경 판정 근거 리포트 (블랙박스 해결)</h3>
+        <div id="xTxt" class="p-4 bg-slate-50 rounded-xl border text-sm leading-relaxed"></div>
+        <div id="xBars" class="space-y-3 pt-2"></div>
       </div>
       <div class="bg-white p-6 rounded-2xl border">
         <h3 class="text-lg font-black mb-2">선형 회귀 기준선 vs ANN 실측 추이</h3>
-        <div class="h-60"><canvas id="myChart"></canvas></div>
+        <div class="h-60"><canvas id="chart"></canvas></div>
       </div>
     </section>
 
-    <!-- 5. 공정 개선 시뮬레이터 -->
     <section class="bg-slate-900 text-white p-6 rounded-2xl space-y-4">
       <div class="flex flex-col md:flex-row justify-between items-center gap-2">
-        <div>
-          <h3 class="text-lg font-black">연구원용 공정 저감 시뮬레이터</h3>
-          <p class="text-xs text-slate-400">전력 감축 및 저감 설비 가동 시 친환경 기준 달성 여부 예측</p>
-        </div>
-        <div id="simBadge" class="px-4 py-2 rounded-xl font-bold text-sm bg-slate-800"></div>
+        <div><h3 class="text-lg font-black">연구원용 공정 저감 시뮬레이터</h3><p class="text-xs text-slate-400">전력 감축 및 저감 설비 효율 조절 시 친환경 기준 달성 여부 예측</p></div>
+        <div id="sBadge" class="px-4 py-2 rounded-xl font-bold text-sm bg-slate-800"></div>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="bg-slate-800 p-4 rounded-xl">
-          <div class="flex justify-between text-xs font-bold mb-1"><span>전력 소비 감축률</span><span id="eVal">0%</span></div>
-          <input id="eSlider" type="range" min="0" max="50" value="0" class="w-full accent-emerald-400" />
-        </div>
-        <div class="bg-slate-800 p-4 rounded-xl">
-          <div class="flex justify-between text-xs font-bold mb-1"><span>대기오염 저감 효율</span><span id="fVal">0%</span></div>
-          <input id="fSlider" type="range" min="0" max="60" value="0" class="w-full accent-emerald-400" />
-        </div>
+        <div class="bg-slate-800 p-4 rounded-xl"><div class="flex justify-between text-xs font-bold mb-1"><span>전력 소비 감축률</span><span id="eV">0%</span></div><input id="eS" type="range" min="0" max="50" value="0" class="w-full" /></div>
+        <div class="bg-slate-800 p-4 rounded-xl"><div class="flex justify-between text-xs font-bold mb-1"><span>대기오염 저감 효율</span><span id="fV">0%</span></div><input id="fS" type="range" min="0" max="60" value="0" class="w-full" /></div>
       </div>
     </section>
-
   </main>
 
-  <!-- 새 회사 직접 입력 창 -->
   <div id="modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-3">
       <h3 class="text-lg font-black">새 회사 위험도 직접 측정</h3>
-      <input id="mName" type="text" placeholder="기업명 (예: 한화솔루션)" class="w-full p-2 border rounded text-sm" />
-      <input id="mEnergy" type="number" placeholder="연간 전력 투입량 MWh (예: 60000)" class="w-full p-2 border rounded text-sm" />
-      <input id="mGhg" type="number" placeholder="실측 온실가스 tCO2eq (예: 140000)" class="w-full p-2 border rounded text-sm" />
+      <input id="mN" type="text" placeholder="기업명 (예: 한화솔루션)" class="w-full p-2 border rounded text-sm" />
+      <input id="mE" type="number" placeholder="연간 전력 투입량 MWh (예: 60000)" class="w-full p-2 border rounded text-sm" />
+      <input id="mG" type="number" placeholder="실측 온실가스 tCO2eq (예: 140000)" class="w-full p-2 border rounded text-sm" />
       <div class="grid grid-cols-3 gap-2">
-        <input id="mNox" type="number" placeholder="NOx(톤)" value="50" class="p-2 border rounded text-sm" />
-        <input id="mSox" type="number" placeholder="SOx(톤)" value="20" class="p-2 border rounded text-sm" />
-        <input id="mPm" type="number" placeholder="PM2.5(톤)" value="5" class="p-2 border rounded text-sm" />
+        <input id="m1" type="number" value="50" class="p-2 border rounded text-sm" />
+        <input id="m2" type="number" value="20" class="p-2 border rounded text-sm" />
+        <input id="m3" type="number" value="5" class="p-2 border rounded text-sm" />
       </div>
       <div class="flex gap-2 pt-2">
-        <button id="closeModalBtn" type="button" class="flex-1 py-2 border rounded-lg font-bold text-sm">취소</button>
-        <button id="addCompBtn" type="button" class="flex-1 py-2 bg-emerald-600 text-white rounded-lg font-bold text-sm">측정 및 추가</button>
+        <button id="mClose" type="button" class="flex-1 py-2 border rounded-lg font-bold text-sm">취소</button>
+        <button id="mAdd" type="button" class="flex-1 py-2 bg-emerald-600 text-white rounded-lg font-bold text-sm">측정 및 추가</button>
       </div>
     </div>
   </div>
 
   <script>
     const db = [
-      { id: 1, name: "LG화학 (여수공장)", process: "석유화학 기초소재 공정", source: "한국환경산업기술원 5개년 DB", energy: 84000, ghg: 142500, base: 145000, nox: 115, sox: 34, pm: 8.5, ann: 0, risk: "안전", eco: true,
-        reason: "전력 투입량 대비 선형회귀 예측 기준치(145,000 tCO2eq)보다 -1.7% 낮게 배출되고, ANN 이상 파형이 0건으로 친환경 적합 판정입니다.",
-        factors: [["기준선 준수 및 저감 효율", 62], ["NOx 안정 제어", 24], ["SOx 억제율", 14]], actual: [140,138,142,141,139,143] },
-      { id: 2, name: "포스코 (포항제철소)", process: "고로 제선 및 제강 공정", source: "한국환경산업기술원 5개년 DB", energy: 310000, ghg: 715000, base: 640000, nox: 890, sox: 412, pm: 65.2, ann: 2, risk: "주의", eco: false,
-        reason: "선형회귀 예측 기준치(640,000 tCO2eq) 대비 +11.7% 초과 배출되었으며, 황산화물(SOx) 배출 기여도가 45%로 높아 공정 개선이 필요합니다.",
-        factors: [["황산화물(SOx) 배출 기여도", 45], ["질소산화물(NOx) 배출 비중", 35], ["탄소 기준선 초과(+11.7%)", 20]], actual: [630,650,695,720,710,680] },
-      { id: 3, name: "현대제철 (당진제철소)", process: "일관제철 및 특수강 공정", source: "한국환경산업기술원 5개년 DB", energy: 245000, ghg: 568000, base: 495000, nox: 640, sox: 295, pm: 49.8, ann: 3, risk: "위험", eco: false,
-        reason: "선형회귀 기준치 대비 +14.7% 초과 배출 및 ANN 비선형 이상 급증 3회 탐지. 질소산화물(NOx) 비중이 47%로 친환경 부적합 판정입니다.",
-        factors: [["질소산화물(NOx) 초과 기여도", 47], ["탄소 기준치 초과(+14.7%)", 34], ["황산화물(SOx) 영향", 19]], actual: [490,520,565,595,580,550] },
-      { id: 4, name: "SK에너지 (울산CLX)", process: "원유 정제 및 정밀화학 공정", source: "한국환경산업기술원 5개년 DB", energy: 162000, ghg: 274000, base: 280000, nox: 210, sox: 88, pm: 16.2, ann: 0, risk: "안전", eco: true,
-        reason: "선형회귀 예측 기준치 대비 -2.1% 감축 달성 및 대기오염물질 전 항목 기준치 이내 유지로 친환경 적합 판정입니다.",
-        factors: [["에너지 효율 및 탄소 감축", 59], ["SOx 저감 설비 효율", 26], ["NOx 안정적 제어", 15]], actual: [275,272,276,274,271,275] },
-      { id: 5, name: "Suncor Energy (캐나다)", process: "오일샌드 개질 시설", source: "캐나다 GHGRP 공식 DB", energy: 195000, ghg: 482000, base: 365000, nox: 520, sox: 310, pm: 48.0, ann: 7, risk: "심각", eco: false,
-        reason: "공식 기준치(365,000 tCO2eq) 대비 +32.1% 초과 배출 및 ANN 가스 연소 이상 급등 7회 적발로 친환경 부적합 판정입니다.",
-        factors: [["탄소 기준선 초과(+32.1%)", 48], ["NOx 및 SOx 급증 비중", 37], ["ANN 이상 파형 빈도", 15]], actual: [360,410,495,540,510,475] },
-      { id: 6, name: "ArcelorMittal Dofasco (캐나다)", process: "전기로 저탄소 제강 시설", source: "캐나다 GHGRP 공식 DB", energy: 150000, ghg: 289000, base: 292000, nox: 240, sox: 95, pm: 19.4, ann: 0, risk: "안전", eco: true,
-        reason: "전기로 공정 운영으로 선형회귀 기준치 대비 -1.0% 낮게 배출되며 모든 대기오염물질이 기준치 이하로 검증되었습니다.",
-        factors: [["전기로 에너지 효율", 58], ["대기오염물질 안정화", 28], ["데이터 일치율", 14]], actual: [290,288,291,287,289,290] }
+      { id: 1, name: "LG화학 (여수공장)", sub: "석유화학 기초소재 공정", src: "한국환경산업기술원 5개년 DB", eng: 84000, ghg: 142500, base: 145000, air: "NOx 115t · SOx 34t · PM2.5 8.5t", ann: 0, risk: "안전", eco: true,
+        txt: "전력 투입량 대비 선형회귀 예측 기준치(145,000 tCO2eq)보다 -1.7% 낮게 배출되고, ANN 이상 파형이 0건으로 친환경 적합 판정입니다.",
+        fac: [["기준선 준수 및 저감 효율", 62], ["NOx 안정 제어", 24], ["SOx 억제율", 14]], act: [140,138,142,141,139,143] },
+      { id: 2, name: "포스코 (포항제철소)", sub: "고로 제선 및 제강 공정", src: "한국환경산업기술원 5개년 DB", eng: 310000, ghg: 715000, base: 640000, air: "NOx 890t · SOx 412t · PM2.5 65.2t", ann: 2, risk: "주의", eco: false,
+        txt: "선형회귀 예측 기준치(640,000 tCO2eq) 대비 +11.7% 초과 배출되었으며, 황산화물(SOx) 배출 기여도가 45%로 높아 공정 개선이 필요합니다.",
+        fac: [["황산화물(SOx) 배출 기여도", 45], ["질소산화물(NOx) 배출 비중", 35], ["탄소 기준선 초과(+11.7%)", 20]], act: [630,650,695,720,710,680] },
+      { id: 3, name: "현대제철 (당진제철소)", sub: "일관제철 및 특수강 공정", src: "한국환경산업기술원 5개년 DB", eng: 245000, ghg: 568000, base: 495000, air: "NOx 640t · SOx 295t · PM2.5 49.8t", ann: 3, risk: "위험", eco: false,
+        txt: "선형회귀 기준치 대비 +14.7% 초과 배출 및 ANN 비선형 이상 급증 3회 탐지. 질소산화물(NOx) 비중이 47%로 친환경 부적합 판정입니다.",
+        fac: [["질소산화물(NOx) 초과 기여도", 47], ["탄소 기준치 초과(+14.7%)", 34], ["황산화물(SOx) 영향", 19]], act: [490,520,565,595,580,550] },
+      { id: 4, name: "SK에너지 (울산CLX)", sub: "원유 정제 및 정밀화학 공정", src: "한국환경산업기술원 5개년 DB", eng: 162000, ghg: 274000, base: 280000, air: "NOx 210t · SOx 88t · PM2.5 16.2t", ann: 0, risk: "안전", eco: true,
+        txt: "선형회귀 예측 기준치 대비 -2.1% 감축 달성 및 대기오염물질 전 항목 기준치 이내 유지로 친환경 적합 판정입니다.",
+        fac: [["에너지 효율 및 탄소 감축", 59], ["SOx 저감 설비 효율", 26], ["NOx 안정적 제어", 15]], act: [275,272,276,274,271,275] },
+      { id: 5, name: "Suncor Energy (캐나다)", sub: "오일샌드 개질 시설", src: "캐나다 GHGRP 공식 DB", eng: 195000, ghg: 482000, base: 365000, air: "NOx 520t · SOx 310t · PM2.5 48.0t", ann: 7, risk: "심각", eco: false,
+        txt: "공식 기준치(365,000 tCO2eq) 대비 +32.1% 초과 배출 및 ANN 가스 연소 이상 급등 7회 적발로 친환경 부적합 판정입니다.",
+        fac: [["탄소 기준선 초과(+32.1%)", 48], ["NOx 및 SOx 급증 비중", 37], ["ANN 이상 파형 빈도", 15]], act: [360,410,495,540,510,475] },
+      { id: 6, name: "ArcelorMittal (캐나다)", sub: "전기로 저탄소 제강 시설", src: "캐나다 GHGRP 공식 DB", eng: 150000, ghg: 289000, base: 292000, air: "NOx 240t · SOx 95t · PM2.5 19.4t", ann: 0, risk: "안전", eco: true,
+        txt: "전기로 공정 운영으로 선형회귀 기준치 대비 -1.0% 낮게 배출되며 모든 대기오염물질이 기준치 이하로 검증되었습니다.",
+        fac: [["전기로 에너지 효율", 58], ["대기오염물질 안정화", 28], ["데이터 일치율", 14]], act: [290,288,291,287,289,290] }
     ];
 
-    let cur = db[0];
-    let chart = null;
+    let cur = db[0], chart = null;
 
-    function renderButtons() {
-      const box = document.getElementById("btnList");
+    function show(item) {
+      cur = item;
+      const box = document.getElementById("btnBox");
       box.innerHTML = "";
-      db.forEach(item => {
+      db.forEach(d => {
         const b = document.createElement("button");
         b.type = "button";
-        b.textContent = (item.eco ? "🟢 " : "🔴 ") + item.name;
-        b.className = "px-3 py-1.5 rounded-lg text-xs font-bold border " + (cur.id === item.id ? "bg-slate-900 text-white border-slate-900" : "bg-slate-50 hover:bg-emerald-50 border-slate-300");
-        b.onclick = () => selectItem(item);
+        b.textContent = (d.eco ? "🟢 " : "🔴 ") + d.name;
+        b.className = "px-3 py-1.5 rounded-lg text-xs font-bold border " + (cur.id === d.id ? "bg-slate-900 text-white" : "bg-slate-50 border-slate-300");
+        b.onclick = () => show(d);
         box.appendChild(b);
       });
-    }
 
-    function selectItem(item) {
-      cur = item;
-      renderButtons();
-      document.getElementById("eSlider").value = 0;
-      document.getElementById("fSlider").value = 0;
-
+      document.getElementById("eS").value = 0;
+      document.getElementById("fS").value = 0;
       const diff = (((item.ghg - item.base) / item.base) * 100).toFixed(1);
-      const vBox = document.getElementById("verdictBox");
-      const fBadge = document.getElementById("finalBadge");
-      const rBadge = document.getElementById("badgeRisk");
 
-      vBox.className = "p-6 rounded-2xl border-2 flex flex-col md:flex-row justify-between items-center gap-4 " + (item.eco ? "border-emerald-400 bg-emerald-50" : "border-rose-400 bg-rose-50");
-      fBadge.className = "px-6 py-3 rounded-xl font-black text-lg text-white " + (item.eco ? "bg-emerald-600" : "bg-rose-600");
-      fBadge.textContent = item.eco ? "✓ 최종 판정: 친환경 적합" : "✕ 최종 판정: 친환경 부적합";
-      rBadge.className = "text-xs font-black px-2.5 py-0.5 rounded " + (item.eco ? "bg-emerald-200 text-emerald-900" : "bg-rose-200 text-rose-900");
-      rBadge.textContent = "위험 수준: " + item.risk;
+      document.getElementById("vBox").className = "p-6 rounded-2xl border-2 flex flex-col md:flex-row justify-between items-center gap-4 " + (item.eco ? "border-emerald-400 bg-emerald-50" : "border-rose-400 bg-rose-50");
+      document.getElementById("fBadge").className = "px-6 py-3 rounded-xl font-black text-lg text-white " + (item.eco ? "bg-emerald-600" : "bg-rose-600");
+      document.getElementById("fBadge").textContent = item.eco ? "✓ 최종 판정: 친환경 적합" : "✕ 최종 판정: 친환경 부적합";
+      document.getElementById("bRisk").className = "text-xs font-black px-2.5 py-0.5 rounded " + (item.eco ? "bg-emerald-200 text-emerald-900" : "bg-rose-200 text-rose-900");
+      document.getElementById("bRisk").textContent = "위험 수준: " + item.risk;
+      document.getElementById("bSrc").textContent = "출처: " + item.src;
+      document.getElementById("tName").textContent = item.name;
+      document.getElementById("tSub").textContent = item.sub;
 
-      document.getElementById("badgeSource").textContent = "출처: " + item.source;
-      document.getElementById("titleName").textContent = item.name;
-      document.getElementById("subProcess").textContent = item.process;
+      document.getElementById("kGhg").textContent = item.ghg.toLocaleString() + " tCO2eq";
+      document.getElementById("kDiff").textContent = diff > 0 ? `▲ 기준치 대비 +${diff}% 초과` : `▼ 기준치 대비 ${diff}% 정상`;
+      document.getElementById("kDiff").className = "text-xs font-bold mt-1 " + (diff > 0 ? "text-rose-600" : "text-emerald-600");
+      document.getElementById("kBase").textContent = item.base.toLocaleString() + " tCO2eq";
+      document.getElementById("kEng").textContent = "투입량: " + item.eng.toLocaleString() + " MWh";
+      document.getElementById("kAir").textContent = item.air;
+      document.getElementById("kAnn").textContent = item.ann + "건 탐지";
+      document.getElementById("xTxt").textContent = item.txt;
 
-      document.getElementById("valGhg").textContent = item.ghg.toLocaleString() + " tCO2eq";
-      document.getElementById("valDiff").textContent = diff > 0 ? `▲ 기준치 대비 +${diff}% 초과` : `▼ 기준치 대비 ${diff}% 정상`;
-      document.getElementById("valDiff").className = "text-xs font-bold mt-1 " + (diff > 0 ? "text-rose-600" : "text-emerald-600");
-      document.getElementById("valBase").textContent = item.base.toLocaleString() + " tCO2eq";
-      document.getElementById("valEnergy").textContent = "투입량: " + item.energy.toLocaleString() + " MWh";
-      document.getElementById("valAir").textContent = `NOx ${item.nox}t · SOx ${item.sox}t · PM2.5 ${item.pm}t`;
-      document.getElementById("valAnn").textContent = item.ann + "건 탐지";
-
-      document.getElementById("xaiText").textContent = item.reason;
-      const bars = document.getElementById("xaiBars");
-      bars.innerHTML = item.factors.map(f => `
+      document.getElementById("xBars").innerHTML = item.fac.map(f => `
         <div>
           <div class="flex justify-between text-xs font-bold mb-1"><span>${f[0]}</span><span>${f[1]}%</span></div>
           <div class="w-full bg-slate-100 h-2.5 rounded-full"><div class="${item.eco ? 'bg-emerald-500' : 'bg-rose-500'} h-2.5 rounded-full" style="width:${f[1]}%"></div></div>
         </div>
       `).join("");
 
-      const ctx = document.getElementById("myChart").getContext("2d");
+      const ctx = document.getElementById("chart").getContext("2d");
       if (chart) chart.destroy();
-      const baseLine = Array(6).fill(Math.round(item.base / 1000));
       chart = new Chart(ctx, {
         type: "line",
         data: {
           labels: ["00시", "04시", "08시", "12시", "16시", "20시"],
           datasets: [
-            { label: "ANN 실측 배출 추이", data: item.actual, borderColor: item.eco ? "#10b981" : "#f43f5e", borderWidth: 3, tension: 0.3 },
-            { label: "선형 회귀 기준선", data: baseLine, borderColor: "#3b82f6", borderDash: [5, 5], borderWidth: 2, pointRadius: 0 }
+            { label: "ANN 실측 배출 추이", data: item.act, borderColor: item.eco ? "#10b981" : "#f43f5e", borderWidth: 3 },
+            { label: "선형 회귀 기준선", data: Array(6).fill(Math.round(item.base / 1000)), borderColor: "#3b82f6", borderDash: [5, 5], borderWidth: 2, pointRadius: 0 }
           ]
         },
         options: { responsive: true, maintainAspectRatio: false }
       });
-
-      updateSim();
+      sim();
     }
 
-    function updateSim() {
-      const e = Number(document.getElementById("eSlider").value);
-      const f = Number(document.getElementById("fSlider").value);
-      document.getElementById("eVal").textContent = `-${e}%`;
-      document.getElementById("fVal").textContent = `+${f}%`;
-      const sim = Math.round(cur.ghg * (1 - (e * 0.7 + f * 0.3) / 100));
-      const sb = document.getElementById("simBadge");
-      if (sim <= cur.base) {
-        sb.className = "px-4 py-2 rounded-xl font-bold text-sm bg-emerald-500 text-slate-950";
-        sb.textContent = `예상 배출량: ${sim.toLocaleString()} tCO2eq → 친환경 기준 달성!`;
-      } else {
-        sb.className = "px-4 py-2 rounded-xl font-bold text-sm bg-amber-500/20 text-amber-300";
-        sb.textContent = `예상 배출량: ${sim.toLocaleString()} tCO2eq (기준 초과)`;
-      }
+    function sim() {
+      const e = Number(document.getElementById("eS").value);
+      const f = Number(document.getElementById("fS").value);
+      document.getElementById("eV").textContent = `-${e}%`;
+      document.getElementById("fV").textContent = `+${f}%`;
+      const v = Math.round(cur.ghg * (1 - (e * 0.7 + f * 0.3) / 100));
+      const sb = document.getElementById("sBadge");
+      sb.className = "px-4 py-2 rounded-xl font-bold text-sm " + (v <= cur.base ? "bg-emerald-500 text-slate-950" : "bg-amber-500/20 text-amber-300");
+      sb.textContent = v <= cur.base ? `예상 배출량: ${v.toLocaleString()} → 친환경 기준 달성!` : `예상 배출량: ${v.toLocaleString()} (기준 초과)`;
     }
 
-    document.getElementById("searchBtn").onclick = () => {
-      const q = document.getElementById("searchInput").value.trim().toLowerCase();
-      if (!q) return alert("검색할 기업명을 입력하세요.");
+    document.getElementById("qBtn").onclick = () => {
+      const q = document.getElementById("qInput").value.trim().toLowerCase();
       const found = db.find(x => x.name.toLowerCase().includes(q));
-      if (found) selectItem(found);
-      else alert("기본 목록에 없는 기업입니다. [+ 새 회사 직접 측정] 버튼을 눌러 추가해 보세요!");
+      if (found) show(found); else alert("기본 목록에 없는 기업입니다. [+ 새 회사 직접 측정]으로 추가해 보세요!");
     };
-
-    document.getElementById("eSlider").oninput = updateSim;
-    document.getElementById("fSlider").oninput = updateSim;
-    document.getElementById("openModalBtn").onclick = () => document.getElementById("modal").classList.remove("hidden");
-    document.getElementById("closeModalBtn").onclick = () => document.getElementById("modal").classList.add("hidden");
-
-    document.getElementById("addCompBtn").onclick = () => {
-      const name = document.getElementById("mName").value.trim();
-      const energy = Number(document.getElementById("mEnergy").value);
-      const ghg = Number(document.getElementById("mGhg").value);
-      const nox = Number(document.getElementById("mNox").value) || 30;
-      const sox = Number(document.getElementById("mSox").value) || 10;
-      const pm = Number(document.getElementById("mPm").value) || 3;
-      if (!name || !energy || !ghg) return alert("기업명, 전력 투입량, 온실가스 배출량을 모두 입력하세요.");
-
-      const base = Math.round(energy * 1.85);
-      const diff = (((ghg - base) / base) * 100).toFixed(1);
-      const eco = ghg <= base;
-      const newObj = {
-        id: Date.now(), name, process: "사용자 추가 검증 공정", source: "직접 입력 데이터",
-        energy, ghg, base, nox, sox, pm, ann: eco ? 0 : 3, risk: eco ? "안전" : (diff > 25 ? "심각" : "위험"), eco,
-        reason: `입력된 에너지(${energy.toLocaleString()} MWh) 대비 선형회귀 기준치(${base.toLocaleString()} tCO2eq)와 비교한 결과 ${diff > 0 ? '+' + diff + '% 초과' : diff + '% 정상'}로 판정되었습니다.`,
-        factors: [["기준선 대비 편차", 50], ["NOx 배출 영향", 30], ["SOx 및 미세먼지", 20]],
-        actual: Array(6).fill(Math.round(ghg / 1000))
-      };
-      db.unshift(newObj);
+    document.getElementById("eS").oninput = sim;
+    document.getElementById("fS").oninput = sim;
+    document.getElementById("mOpen").onclick = () => document.getElementById("modal").classList.remove("hidden");
+    document.getElementById("mClose").onclick = () => document.getElementById("modal").classList.add("hidden");
+    document.getElementById("mAdd").onclick = () => {
+      const name = document.getElementById("mN").value.trim();
+      const eng = Number(document.getElementById("mE").value);
+      const ghg = Number(document.getElementById("mG").value);
+      if (!name || !eng || !ghg) return alert("모든 필수 항목을 입력하세요.");
+      const base = Math.round(eng * 1.85), eco = ghg <= base;
+      const item = { id: Date.now(), name, sub: "사용자 직접 입력 공정", src: "직접 입력 데이터", eng, ghg, base,
+        air: `NOx ${document.getElementById("m1").value}t · SOx ${document.getElementById("m2").value}t · PM2.5 ${document.getElementById("m3").value}t`,
+        ann: eco ? 0 : 3, risk: eco ? "안전" : "위험", eco,
+        txt: `투입 에너지(${eng.toLocaleString()} MWh) 대비 선형회귀 기준치(${base.toLocaleString()})와 대조해 ${eco ? '친환경 적합' : '친환경 부적합'}으로 판정되었습니다.`,
+        fac: [["기준선 대비 편차", 55], ["대기오염물질 영향", 45]], act: Array(6).fill(Math.round(ghg / 1000)) };
+      db.unshift(item);
       document.getElementById("modal").classList.add("hidden");
-      selectItem(newObj);
+      show(item);
     };
-
-    document.getElementById("csvInput").onchange = (e) => {
+    document.getElementById("fInput").onchange = (e) => {
       const file = e.target.files[0];
       if (!file) return;
-      Papa.parse(file, {
-        header: true, skipEmptyLines: true,
-        complete: (res) => {
-          const row = res.data[0];
-          if (!row) return alert("읽을 수 있는 데이터가 없습니다.");
-          const keys = Object.keys(row);
-          const name = String(row[keys[0]] || file.name);
-          const energy = parseFloat(String(row[keys[1]] || "50000").replace(/,/g, "")) || 50000;
-          const ghg = parseFloat(String(row[keys[2]] || "90000").replace(/,/g, "")) || 90000;
-          const base = Math.round(energy * 1.85);
-          const eco = ghg <= base;
-          const newObj = {
-            id: Date.now(), name, process: "CSV 파일 추출 공정", source: "업로드: " + file.name,
-            energy, ghg, base, nox: 45, sox: 18, pm: 5, ann: eco ? 0 : 2, risk: eco ? "안전" : "위험", eco,
-            reason: `업로드된 파일(${file.name})의 실제 데이터를 선형회귀 기준선(${base.toLocaleString()})과 대조해 판정한 결과입니다.`,
-            factors: [["기준선 대비 배출 편차", 55], ["대기오염물질 영향", 45]],
-            actual: Array(6).fill(Math.round(ghg / 1000))
-          };
-          db.unshift(newObj);
-          selectItem(newObj);
-        }
-      });
+      Papa.parse(file, { header: true, skipEmptyLines: true, complete: (res) => {
+        const r = res.data[0]; if (!r) return;
+        const k = Object.keys(r);
+        const name = String(r[k[0]] || file.name), eng = parseFloat(String(r[k[1]] || "50000").replace(/,/g, "")) || 50000, ghg = parseFloat(String(r[k[2]] || "90000").replace(/,/g, "")) || 90000;
+        const base = Math.round(eng * 1.85), eco = ghg <= base;
+        const item = { id: Date.now(), name, sub: "CSV 추출 공정", src: file.name, eng, ghg, base, air: "NOx 45t · SOx 18t · PM2.5 5t",
+          ann: eco ? 0 : 2, risk: eco ? "안전" : "위험", eco, txt: `업로드 파일(${file.name}) 실측 데이터 분석 결과입니다.`,
+          fac: [["기준선 대비 편차", 55], ["대기오염물질 영향", 45]], act: Array(6).fill(Math.round(ghg / 1000)) };
+        db.unshift(item); show(item);
+      }});
     };
 
-    selectItem(db[0]);
+    show(db[0]);
   </script>
 </body>
 </html>
